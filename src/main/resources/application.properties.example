@@ -1,0 +1,8 @@
+# Database
+spring.datasource.url=jdbc:postgresql://localhost:5432/db_name
+spring.datasource.username=your_user
+spring.datasource.password=your_password
+
+# JWT
+jwt.secret=your_jwt_secret
+jwt.expiration=3600000
