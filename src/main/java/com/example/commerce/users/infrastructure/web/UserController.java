@@ -1,29 +1,25 @@
 package com.example.commerce.users.infrastructure.web;
 
-import com.example.commerce.users.application.dto.CreateUserRequest;
 import com.example.commerce.users.application.dto.UserResponse;
-import com.example.commerce.users.application.usecase.CreateUserUseCase;
-import com.example.commerce.users.domain.model.Role;
-import com.example.commerce.users.domain.model.User;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import com.example.commerce.users.application.usecase.GetCurrentUserUseCase;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
-
-/**
- * Controller REST para manejar endpoints de usuarios.
- *
- * Este es un ADAPTER DE ENTRADA (inbound adapter).
- * Traduce HTTP → UseCase
- */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final CreateUserUseCase createUserUseCase;
+    private final GetCurrentUserUseCase getCurrentUserUseCase;
 
-    public UserController(CreateUserUseCase createUserUseCase) {
-        this.createUserUseCase = createUserUseCase;
+    public UserController(GetCurrentUserUseCase getCurrentUserUseCase) {
+        this.getCurrentUserUseCase = getCurrentUserUseCase;
+    }
+
+    @GetMapping("/me")
+    public UserResponse me(Authentication authentication) {
+        String email = (String) authentication.getPrincipal();
+        return getCurrentUserUseCase.execute(email);
     }
 }

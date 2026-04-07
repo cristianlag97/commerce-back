@@ -5,9 +5,7 @@ import com.example.commerce.users.domain.model.Role;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Puerto de salida para roles.
- */
+
 public interface RoleRepositoryPort {
 
     Role save(Role role);

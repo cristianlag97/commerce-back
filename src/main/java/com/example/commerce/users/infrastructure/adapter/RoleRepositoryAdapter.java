@@ -9,13 +9,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Adapter que implementa el puerto del dominio para roles.
- *
- * Este adapter traduce entre:
- * - Role (dominio)
- * - RoleEntity (persistencia)
- */
 @Component
 public class RoleRepositoryAdapter implements RoleRepositoryPort {
 
@@ -44,9 +37,6 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
                 .map(this::toDomain);
     }
 
-    /**
-     * Convierte una entidad JPA a modelo de dominio.
-     */
     private Role toDomain(RoleEntity entity) {
         return new Role(
                 entity.getId(),
@@ -54,9 +44,6 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
         );
     }
 
-    /**
-     * Convierte un modelo de dominio a entidad JPA.
-     */
     private RoleEntity toEntity(Role role) {
         return new RoleEntity(
                 role.getId(),
