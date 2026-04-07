@@ -13,13 +13,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
-/**
- * Adapter que implementa el puerto del dominio para usuarios.
- *
- * Aquí ocurre la traducción entre:
- * - User (dominio)
- * - UserEntity (persistencia)
- */
 @Component
 public class UserRepositoryAdapter implements UserRepositoryPort {
 
@@ -75,9 +68,6 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         );
     }
 
-    /**
-     * Convierte User del dominio a UserEntity para persistencia.
-     */
     private UserEntity toEntity(User user) {
         Set<RoleEntity> roles = user.getRoles()
                 .stream()

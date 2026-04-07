@@ -9,7 +9,7 @@ public class ErrorResponse {
     private int status;
     private String error;
     private String message;
-    private Map<String, String> details; // opcional (para validaciones)
+    private Map<String, String> details;
 
     public ErrorResponse(int status, String error, String message) {
         this.timestamp = LocalDateTime.now().toString();

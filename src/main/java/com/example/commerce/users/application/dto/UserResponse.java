@@ -4,9 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * DTO de salida para exponer datos del usuario sin información sensible.
- */
 public class UserResponse {
 
     private UUID id;

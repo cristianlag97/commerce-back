@@ -1,48 +1,57 @@
 package com.example.commerce.shared.infrastructure.config;
 
+import com.example.commerce.auth.infrastructure.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Configuración básica de seguridad.
- *
- * Por ahora dejamos abierto el endpoint de creación de usuarios
- * para poder probar el flujo.
+ * Configuración de seguridad usando JWT.
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // Como estamos probando una API REST, desactivamos CSRF temporalmente
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Definimos permisos por rutas
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/auth/register",
-                                "/api/auth/login"
-                        ).permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
+
+                        // Productos: escritura solo ADMIN
+                        .requestMatchers(HttpMethod.POST, "/api/products/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                        .hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
-                // Dejamos la config básica por ahora
-                .httpBasic(Customizer.withDefaults())
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+                )
 
                 .build();
     }
